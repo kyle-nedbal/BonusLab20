@@ -1,0 +1,144 @@
+--1 - Select all records from the customers table
+SELECT
+    *
+FROM Sales.Customer;
+
+-- 2 - Find all customers living in Paris or London
+SELECT 
+    P.FirstName,
+    P.LastName,
+    PA.City
+FROM Sales.Customer S
+JOIN Person.Person P
+ON S.PersonID = P.BusinessEntityID
+JOIN PERSON.BusinessEntityAddress PB
+ON P.BusinessEntityID = PB.BusinessEntityID
+JOIN Person.Address PA
+ON PB.AddressID = PA.AddressID
+WHERE City = 'Paris' OR City = 'London';
+
+-- 3 - Make a list of cities where customers are coming from. The list should not have any duplicates or nulls.
+SELECT DISTINCT
+    PA.City
+FROM Sales.Customer S
+JOIN Person.BusinessEntityAddress PB
+ON S.PersonID = PB.BusinessEntityID
+JOIN Person.Address PA
+ON PB.AddressID = PA.AddressID
+WHERE City IS NOT NULL
+
+-- 4 - Show a sorted list of employees first names
+SELECT
+    FirstName,
+    LastName
+FROM PERSON.PERSON
+ORDER BY FirstName ASC;
+
+-- 5 - Find the average of employees salaries
+SELECT
+    AVG(Rate)
+FROM HumanResources.EmployeePayHistory;
+
+-- 6 - Show the first and last name of the person with the highest salary
+SELECT TOP 1
+    FirstName,
+    LastName,
+    Rate
+FROM HumanResources.EmployeePayHistory EP
+JOIN Person.Person P
+ON EP.BusinessEntityID = P.BusinessEntityID
+ORDER BY Rate DESC
+
+-- 7 - Find a list of employees with a BA
+-- NO DEGREES
+
+-- 8 - Find the total for each order
+SELECT
+    TotalDue
+FROM Purchasing.PurchaseOrderHeader;
+
+-- 9 - Get a list of all employees who got hired between 1/1/1994 and today
+SELECT
+    P.FirstName,
+    P.LastName,
+    E.HireDate
+FROM HumanResources.Employee E
+JOIN Person.Person P
+ON E.BusinessEntityID = P.BusinessEntityID
+WHERE HireDate >= '1/1/1994';
+
+-- 10 - Find how long employees have been working for Northwind (in years!)
+SELECT
+    P.FirstName,
+    P.LastName,
+    (DATEDIFF(YEAR, E.HireDate, '2020-07-06'))
+FROM HumanResources.Employee E
+JOIN Person.Person P
+ON E.BusinessEntityID = P.BusinessEntityID
+
+-- 11 - Get a list of all products sorted by quantity (ascending and descending order)
+SELECT
+    Name,
+    Quantity
+FROM Production.Product P
+JOIN Production.ProductInventory I
+ON P.ProductID = I.ProductID
+ORDER BY Quantity ASC --OR DESC
+
+-- 12 - Find all products that are low on stock (quantity less than 6)
+SELECT
+    Name,
+    Quantity
+FROM Production.Product P
+JOIN Production.ProductInventory I
+ON P.ProductID = I.ProductID
+WHERE I.Quantity < '6';
+
+-- 13 - Find a list of all the discontinued products
+SELECT
+    Name,
+    DiscontinuedDate
+FROM Production.Product
+WHERE Product.DiscontinuedDate IS NOT NULL;
+
+-- 14
+-- NO TOFU
+
+-- 15 - Find the product that has the highest unit price.
+SELECT TOP 1
+    Name,
+    ListPrice
+FROM Production.Product
+ORDER BY ListPrice DESC;
+
+-- 16 - Get a list of all employees who got hired after 1/1/1993
+SELECT
+    P.FirstName,
+    P.LastName,
+    E.HireDate
+FROM HumanResources.Employee E
+JOIN Person.Person P
+ON E.BusinessEntityID = P.BusinessEntityID
+WHERE HireDate > '1/1/1993';
+
+-- 17 - Get all employees who have title : “Ms.” And “Mrs.”
+SELECT
+    FirstName,
+    LastName,
+    Suffix
+FROM HumanResources.Employee E
+JOIN Person.Person P
+ON E.BusinessEntityID = P.BusinessEntityID
+WHERE Suffix = 'Ms.' OR Suffix = 'Mrs.';
+
+-- 18 - Get all employees who have a Home phone number that has area code 206
+SELECT 
+    FirstName,
+    LastName,
+    PhoneNumber
+FROM HumanResources.Employee E
+JOIN Person.Person P
+ON E.BusinessEntityID = P.BusinessEntityID
+JOIN Person.PersonPhone PP
+ON E.BusinessEntityID = PP.BusinessEntityID
+WHERE PhoneNumber LIKE '206%';
